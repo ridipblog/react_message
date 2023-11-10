@@ -8,19 +8,29 @@ export default function MessageApp() {
     const socket = io('http://localhost:4000', { transports: ['websocket'] });
     useEffect(() => {
         // Listen for 'message' events from the server
-        socket.on('message', (newMessage) => {
-            console.log(newMessage);
-            setMessages((prevMessages) => [...prevMessages, newMessage]);
+        socket.emit('join-room', 'myRoom'); //If You Need To Send Message With Room 
+        socket.on('message', (room, data) => {
+            const text = data.message + data.username;
+            setMessages((prevMessages) => [...prevMessages, text]);
         });
         // Clean up the socket connection on component unmount
         return () => {
-            socket.disconnect();
+            socket.emit('leave-room', 'myRoom'); //If You Need To Send Message With Room 
+            socket.disconnect(); //If You Need Send Message To Client With Then Remove This line 
         };
     }, [messages, message]);
 
     const sendMessage = () => {
         // Emit a 'message' event to the server
-        socket.emit('message', message);
+
+        // socket.emit('message', message); only send message
+        const data = {
+            message: message,
+            username: 'coder'
+        }
+        const room = "myRoom";
+        socket.emit('message', { room, data }); //If You Need To Send Message With Room 
+
         // setMessage(''); // Clear the input field after sending
     };
     return (
