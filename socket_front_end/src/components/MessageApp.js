@@ -8,15 +8,15 @@ export default function MessageApp() {
     const socket = io('http://localhost:4000', { transports: ['websocket'] });
     useEffect(() => {
         // Listen for 'message' events from the server
-        socket.emit('join-room', 'myRoom'); //If You Need To Send Message With Room 
+        socket.emit('join-room', 'myRoom'); //If You Need To Send Message With Room
         socket.on('message', (room, data) => {
             const text = data.message + data.username;
             setMessages((prevMessages) => [...prevMessages, text]);
         });
         // Clean up the socket connection on component unmount
         return () => {
-            socket.emit('leave-room', 'myRoom'); //If You Need To Send Message With Room 
-            socket.disconnect(); //If You Need Send Message To Client With Then Remove This line 
+            socket.emit('leave-room', 'myRoom'); //If You Need To Send Message With Room
+            // socket.disconnect(); //If You Need Send Message To Client With Then Remove This line
         };
     }, [messages, message]);
 
@@ -29,7 +29,7 @@ export default function MessageApp() {
             username: 'coder'
         }
         const room = "myRoom";
-        socket.emit('message', { room, data }); //If You Need To Send Message With Room 
+        socket.emit('message', { room, data }); //If You Need To Send Message With Room
 
         // setMessage(''); // Clear the input field after sending
     };
@@ -41,11 +41,12 @@ export default function MessageApp() {
                 ))}
             </div>
             <p>My Message</p>
-            <div>
+            {/*            <div>
                 {myMessage.map((msg, index) => (
                     <div key={index}>{msg}</div>
                 ))}
             </div>
+                */}
             <input
                 type="text"
                 value={message}
